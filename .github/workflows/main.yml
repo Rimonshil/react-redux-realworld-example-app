@@ -54,8 +54,12 @@ jobs:
     - name: Get previous image tag
       id: get_previous_tag
       run: |
-        PREV_TAG=$(docker pull ${{ secrets.DOCKER_USERNAME }}/frontend:latest 2>/dev/null && echo "success" || echo "fail")
-        echo "PREV_TAG=$PREV_TAG" >> $GITHUB_ENV
+       if docker manifest inspect ${{ secrets.DOCKER_USERNAME }}/frontend:latest > /dev/null 2>&1; then
+         echo "PREV_TAG=success" >> $GITHUB_ENV
+       else
+         echo "PREV_TAG=fail" >> $GITHUB_ENV
+       fi
+        
 
     # Build and push frontend Docker image with cache
     - name: Build and push frontend image
