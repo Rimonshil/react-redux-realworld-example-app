@@ -22,4 +22,4 @@ const getMiddleware = () => {
 };
 
 export const store = createStore(
-  reducer, composeWithDevTools(getMiddleware()));
+  reducer, composeWithDevTools(getMiddleware()));0000}
