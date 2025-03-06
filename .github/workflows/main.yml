@@ -36,7 +36,7 @@ jobs:
     - name: Install and test frontend
       working-directory: .
       run: |
-        npm ci
+        npm i
         npm test
 
     # Set up Docker Buildx for multi-platform builds
