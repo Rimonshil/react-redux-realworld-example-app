@@ -54,12 +54,15 @@ jobs:
     - name: Get previous image tag
       id: get_previous_tag
       run: |
-       if docker manifest inspect ${{ secrets.DOCKER_USERNAME }}/frontend:latest > /dev/null 2>&1; then
-         echo "PREV_TAG=success" >> $GITHUB_ENV
-       else
-         echo "PREV_TAG=fail" >> $GITHUB_ENV
-       fi
-        
+        if docker manifest inspect ${{ secrets.DOCKER_USERNAME }}/frontend:latest > /dev/null 2>&1; then
+          echo "PREV_TAG=success" >> $GITHUB_ENV
+        else
+          echo "PREV_TAG=fail" >> $GITHUB_ENV
+        fi
+
+    # Print PREV_TAG for debugging
+    - name: Print PREV_TAG
+      run: echo "PREV_TAG is $PREV_TAG"
 
     # Build and push frontend Docker image with cache
     - name: Build and push frontend image
@@ -78,5 +81,6 @@ jobs:
       if: failure() && env.PREV_TAG == 'success'
       run: |
         echo "Rolling back to the previous version..."
+        docker pull ${{ secrets.DOCKER_USERNAME }}/frontend:latest
         docker tag ${{ secrets.DOCKER_USERNAME }}/frontend:latest ${{ secrets.DOCKER_USERNAME }}/frontend:rollback
         docker push ${{ secrets.DOCKER_USERNAME }}/frontend:rollback
